@@ -8,12 +8,12 @@ public class GameLoop : MonoBehaviour
     public Transform[] edgeTile;
 
     public int rows, columns;
+    public PlayerSpawner playerSpawner;
 
     private GameObject gameBoard;
 
     private void Start()
     {
-        //edgeTile = new Transform[4];
         gameBoard = new GameObject("Game Board");
 
         for (int i = 0; i < columns; i++)
@@ -33,7 +33,7 @@ public class GameLoop : MonoBehaviour
             }
         }
 
+        playerSpawner.SpawnPlayer(rows, columns);
 
     }
-
 }
