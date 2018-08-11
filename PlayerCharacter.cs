@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
@@ -16,9 +17,8 @@ public class PlayerCharacter : MonoBehaviour
 
     public GameObject projectilePrefab;
     public Transform attackLocation;
-    private List<GameObject> projectiles = new List<GameObject>();
 
-    Quaternion facingDirection;
+    //Quaternion facingDirection;
 
     #endregion
 
@@ -33,11 +33,14 @@ public class PlayerCharacter : MonoBehaviour
 
     private void Start()
     {
+        transform.gameObject.tag = "Player";
+
         col2d = GetComponent<Collider2D>();
         rb2d = GetComponent<Rigidbody2D>();
 
         moveSpeed = 1.2f;
         attackSpeed = 5;
+        health = 5;
     }
 
     private void Update()
@@ -48,6 +51,9 @@ public class PlayerCharacter : MonoBehaviour
         verticalMovement = Input.GetAxisRaw("Vertical");
 
         MouseLook2D();
+
+        if (health <= 0)
+            SceneManager.LoadScene("Title");
 
         if (Input.GetButtonDown("Fire1"))
             Attack();
@@ -80,7 +86,7 @@ public class PlayerCharacter : MonoBehaviour
         //Change the objects rotation
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
         //transform.localRotation = Quaternion.Euler(new Vector3(0, 0, angle));
-        facingDirection = Quaternion.Euler(new Vector3(0, 0, angle));
+        //facingDirection = Quaternion.Euler(new Vector3(0, 0, angle));
         #endregion
     }
 
@@ -97,6 +103,7 @@ public class PlayerCharacter : MonoBehaviour
 
     void Death()
     {
+
 
     }
 }
