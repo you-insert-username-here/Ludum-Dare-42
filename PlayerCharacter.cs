@@ -84,8 +84,9 @@ public class PlayerCharacter : MonoBehaviour
         mousePosition.x = mousePosition.x - objectPosition.x;
         mousePosition.y = mousePosition.y - objectPosition.y;
         //Get a usable angle using MathF nad transform radians to degrees
-        float angle = Mathf.Atan2(mousePosition.y, mousePosition.x) * Mathf.Rad2Deg;
+        //float angle = Mathf.Atan2(mousePosition.y, mousePosition.x) * Mathf.Rad2Deg;
         //Change the objects rotation
+        float angle = Mathf.Atan2(-mousePosition.x, mousePosition.y) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
         //transform.localRotation = Quaternion.Euler(new Vector3(0, 0, angle));
         //facingDirection = Quaternion.Euler(new Vector3(0, 0, angle));
