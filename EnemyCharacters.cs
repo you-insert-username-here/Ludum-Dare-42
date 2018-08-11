@@ -19,6 +19,7 @@ public class EnemyCharacters : MonoBehaviour
     public Transform attackLocation;
     public Transform attackTarget;
     public GameObject deadEnemy;
+    public GameObject playerCharacter;
 
     private Collider2D col2d;
     private Rigidbody2D rb2d;
@@ -32,11 +33,14 @@ public class EnemyCharacters : MonoBehaviour
         col2d = GetComponent<Collider2D>();
         rb2d = GetComponent<Rigidbody2D>();
 
-        moveSpeed = 1.2f; //Multiply by 5 to achieve same as playercharacter.
+        moveSpeed = 0.5f; //Multiply by 5 to achieve same as playercharacter.
         attackSpeed = 5;
         health = 5;
         attackRange = 2;
         swingTimer = 5.0f;
+
+        playerCharacter = GameObject.Find("Player");
+        attackTarget = playerCharacter.transform;
     }
 
     private void Update()
@@ -67,11 +71,24 @@ public class EnemyCharacters : MonoBehaviour
 
     void Movement()
     {
+        Vector3 vectorToTarget = attackTarget.transform.position - transform.position;
+        float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle - 90));
+
+        /*
+        //float angle = Mathf.Atan2(attackTarget.position.y, attackTarget.position.x) * Mathf.Rad2Deg;
         float angle = Mathf.Atan2(attackTarget.position.y, attackTarget.position.x) * Mathf.Rad2Deg;
+
+        if(Input.GetButtonDown("Jump"))
+            Debug.Log(angle);
+
+
+
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+        */
         //rb2d.AddForce(new Vector2((transform.position.x - attackTarget.position.x) * -moveSpeed, (transform.position.y - attackTarget.position.y) * -moveSpeed));
         float step = (moveSpeed * 5.0f) * Time.deltaTime;
-        transform.position = Vector2.MoveTowards(transform.position, attackTarget.position, step);
+        transform.position = Vector2.MoveTowards(transform.position, attackTarget.position, step);        
     }
 
     void TakeDamage()
