@@ -35,6 +35,7 @@ public class PlayerCharacter : MonoBehaviour
     private void Start()
     {
         transform.gameObject.tag = "Player";
+        this.name = "Player";
 
         col2d = GetComponent<Collider2D>();
         rb2d = GetComponent<Rigidbody2D>();
