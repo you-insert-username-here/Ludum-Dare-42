@@ -5,6 +5,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CircleCollider2D))]
+
 public class Projectile : MonoBehaviour 
 {
     public float timeToLive;
@@ -21,7 +22,7 @@ public class Projectile : MonoBehaviour
         moveSpeed = 2;
         timeToLive = 10;
         rb2d = GetComponent<Rigidbody2D>();
-        col2d = GetComponent<Collider2D>();        
+        col2d = GetComponent<Collider2D>();
     }
 
     private void Update()
@@ -39,7 +40,21 @@ public class Projectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("Destroyed: HIT");
         Destroy(this.gameObject);
+
+        if (collision.gameObject.tag == "Player")
+            collision.GetComponent<PlayerCharacter>().health -= damage;
+        else if (collision.gameObject.tag == "Enemy")
+            collision.GetComponent<EnemyCharacters>().health -= damage;
+    }
+
+    private void OnCollisionEnter2D(Collider2D collision)
+    {
+        Destroy(this.gameObject);
+
+        if (collision.gameObject.tag == "Player")
+            collision.GetComponent<PlayerCharacter>().health -= damage;
+        else if (collision.gameObject.tag == "Enemy")
+            collision.GetComponent<EnemyCharacters>().health -= damage;
     }
 }
