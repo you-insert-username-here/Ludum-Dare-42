@@ -17,6 +17,7 @@ public class PlayerCharacter : MonoBehaviour
 
     public GameObject projectilePrefab;
     public Transform attackLocation;
+    public float attackTimer, attackCounter;
 
     //Quaternion facingDirection;
 
@@ -41,6 +42,7 @@ public class PlayerCharacter : MonoBehaviour
         moveSpeed = 1.2f;
         attackSpeed = 5;
         health = 5;
+        attackTimer = 0.5f;
     }
 
     private void Update()
@@ -55,8 +57,8 @@ public class PlayerCharacter : MonoBehaviour
         if (health <= 0)
             SceneManager.LoadScene("Title");
 
-        if (Input.GetButtonDown("Fire1"))
-            Attack();
+
+        Attack();
     }
 
     private void FixedUpdate()
@@ -92,8 +94,19 @@ public class PlayerCharacter : MonoBehaviour
 
     void Attack()
     {
-        Debug.Log("Fire");
-        GameObject fireball = Instantiate(projectilePrefab, attackLocation.position, attackLocation.rotation) as GameObject;
+        if (Input.GetButtonDown("Fire1"))
+        {
+            if (attackCounter == attackTimer)
+            {
+                attackCounter = 0.0f;
+                GameObject fireball = Instantiate(projectilePrefab, attackLocation.position, attackLocation.rotation) as GameObject;
+            }
+        }
+
+        if (attackCounter < attackTimer)
+            attackCounter += 1.0f * Time.deltaTime;
+        else if (attackCounter > attackTimer)
+            attackCounter = attackTimer;
     }
 
     void TakeDamage()
