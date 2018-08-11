@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(BoxCollider2D))]
-public class DeadEnemy : MonoBehaviour 
+public class DeadPlayer : MonoBehaviour 
 {
     private Animator animator;
 

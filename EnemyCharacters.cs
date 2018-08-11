@@ -24,7 +24,8 @@ public class EnemyCharacters : MonoBehaviour
     private Collider2D col2d;
     private Rigidbody2D rb2d;
     private Vector2 currentPosition;
-    
+    private Animator animator;
+
 
     private void Start()
     {
@@ -32,6 +33,7 @@ public class EnemyCharacters : MonoBehaviour
 
         col2d = GetComponent<Collider2D>();
         rb2d = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
 
         moveSpeed = 0.5f; //Multiply by 5 to achieve same as playercharacter.
         attackSpeed = 5;
@@ -59,6 +61,8 @@ public class EnemyCharacters : MonoBehaviour
     {
         if(Vector3.Distance(attackTarget.position, transform.position) < attackRange && attackTarget.gameObject.tag == "Player" && swingTimer == swingCounter)
         {
+            animator.SetBool("isRunning", false);
+            animator.SetTrigger("isAttacking");
             swingCounter = 0.0f;
             attackTarget.GetComponent<PlayerCharacter>().health -= 1;
         }
@@ -74,7 +78,7 @@ public class EnemyCharacters : MonoBehaviour
         Vector3 vectorToTarget = attackTarget.transform.position - transform.position;
         float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle - 90));
-
+        animator.SetTrigger("isRunning");
         /*
         //float angle = Mathf.Atan2(attackTarget.position.y, attackTarget.position.x) * Mathf.Rad2Deg;
         float angle = Mathf.Atan2(attackTarget.position.y, attackTarget.position.x) * Mathf.Rad2Deg;
@@ -99,6 +103,7 @@ public class EnemyCharacters : MonoBehaviour
     {
         if (health <= 0)
         {
+            //animator.SetTrigger("isDead");
             Instantiate(deadEnemy, transform.position, transform.rotation);
             Destroy(this.gameObject);
         }

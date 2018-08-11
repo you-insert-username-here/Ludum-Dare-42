@@ -16,10 +16,12 @@ public class PlayerCharacter : MonoBehaviour
     public int attackSpeed;
 
     public GameObject projectilePrefab;
+    public GameObject deadPlayer;
     public Transform attackLocation;
     public float attackTimer, attackCounter;
 
     //Quaternion facingDirection;
+    private Animator animator;
 
     #endregion
 
@@ -39,6 +41,7 @@ public class PlayerCharacter : MonoBehaviour
 
         col2d = GetComponent<Collider2D>();
         rb2d = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
 
         moveSpeed = 1.2f;
         attackSpeed = 5;
@@ -56,8 +59,19 @@ public class PlayerCharacter : MonoBehaviour
         MouseLook2D();
 
         if (health <= 0)
-            SceneManager.LoadScene("Title");
+            Death();
+            
 
+        if (horizontalMovement != 0 || verticalMovement != 0)
+        {
+            animator.SetBool("isIdle", false);
+            animator.SetBool("isRunning", true);
+        }
+        else
+        {
+            animator.SetBool("isIdle", true);
+            animator.SetBool("isRunning", false);
+        }
 
         Attack();
     }
@@ -100,15 +114,20 @@ public class PlayerCharacter : MonoBehaviour
         {
             if (attackCounter == attackTimer)
             {
+                animator.SetTrigger("isAttacking");
+
                 attackCounter = 0.0f;
                 GameObject fireball = Instantiate(projectilePrefab, attackLocation.position, attackLocation.rotation) as GameObject;
+                
             }
         }
 
         if (attackCounter < attackTimer)
+        {
             attackCounter += 1.0f * Time.deltaTime;
+        }
         else if (attackCounter > attackTimer)
-            attackCounter = attackTimer;
+            attackCounter = attackTimer;        
     }
 
     void TakeDamage()
@@ -118,7 +137,9 @@ public class PlayerCharacter : MonoBehaviour
 
     void Death()
     {
-
-
+        //animator.SetBool("isDead", true);
+        //SceneManager.LoadScene("Title");
+        Instantiate(deadPlayer, transform.position, transform.rotation);
+        Destroy(this.gameObject);
     }
 }
