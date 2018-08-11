@@ -19,7 +19,7 @@ public class Projectile : MonoBehaviour
 
     private void Start()
     {
-        moveSpeed = 2;
+        moveSpeed = 12;
         timeToLive = 10;
         rb2d = GetComponent<Rigidbody2D>();
         col2d = GetComponent<Collider2D>();
@@ -27,7 +27,7 @@ public class Projectile : MonoBehaviour
 
     private void Update()
     {
-        rb2d.velocity = transform.right * moveSpeed;
+        rb2d.velocity = transform.up * moveSpeed;
         timeAlive += 1.0f * Time.deltaTime;
 
         if (timeAlive > timeToLive)
@@ -46,15 +46,6 @@ public class Projectile : MonoBehaviour
             collision.GetComponent<PlayerCharacter>().health -= damage;
         else if (collision.gameObject.tag == "Enemy")
             collision.GetComponent<EnemyCharacters>().health -= damage;
-    }
-
-    private void OnCollisionEnter2D(Collider2D collision)
-    {
-        Destroy(this.gameObject);
-
-        if (collision.gameObject.tag == "Player")
-            collision.GetComponent<PlayerCharacter>().health -= damage;
-        else if (collision.gameObject.tag == "Enemy")
-            collision.GetComponent<EnemyCharacters>().health -= damage;
+        
     }
 }
