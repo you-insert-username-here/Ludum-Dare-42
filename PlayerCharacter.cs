@@ -12,6 +12,8 @@ public class PlayerCharacter : MonoBehaviour
 
     public float moveSpeed;
     public int score;
+    public int level;
+    public int xp, xpNeededForLevel;
 
     //Health Tracker
     public int health;
@@ -39,10 +41,11 @@ public class PlayerCharacter : MonoBehaviour
     private float horizontalMovement, verticalMovement;
 
     private AudioSource audioSource;
-    public AudioClip attack, hit, die;
+    public AudioClip attack, hit, die, levelUp;
     public GameObject canvasObject;
-    public Text endingText;
+    public Text endingText, xpText, attackDamageText, attackSpeedText, levelText;
     public bool gameWon;
+    public bool playDead = false;
 
     #endregion
 
@@ -62,16 +65,31 @@ public class PlayerCharacter : MonoBehaviour
         attackSpeed = 5;    
         attackTimer = 0.5f;
         score = 0;
+        xp = 0;
+        xpNeededForLevel = 3;
         gameWon = false;
         deathTimer = 0;
+        level = 1;
     }
 
     private void Update()
     {
         currentPosition = this.transform.position;
 
-        endingText = Text.FindObjectOfType<Text>();
+        endingText = GameObject.Find("EndingText").GetComponent<Text>();
         endingText.text = "Congratulations!\nYou Killed " + score + " Orcs!";
+
+        xpText = GameObject.Find("xpText").GetComponent<Text>();
+        xpText.text = "XP: " + score;
+
+        attackDamageText = GameObject.Find("attackDamageText").GetComponent<Text>();
+        attackDamageText.text = "Attack Damage: " + this.attackDamage;
+
+        attackSpeedText = GameObject.Find("attackSpeedText").GetComponent<Text>();
+        attackSpeedText.text = "Attack Speed: " + attackTimer;
+
+        levelText = GameObject.Find("Level").GetComponent<Text>();
+        levelText.text = "Level: " + level;
 
         horizontalMovement = Input.GetAxisRaw("Horizontal");
         verticalMovement = Input.GetAxisRaw("Vertical");
@@ -81,6 +99,8 @@ public class PlayerCharacter : MonoBehaviour
         if (health <= 0)
             Death();
 
+        if (xp == xpNeededForLevel)
+            LevelUp();
 
         if (horizontalMovement != 0 || verticalMovement != 0)
         {
@@ -102,7 +122,8 @@ public class PlayerCharacter : MonoBehaviour
         Vector2 movement = new Vector2(horizontalMovement, verticalMovement);
         movement.Normalize();
 
-        rb2d.AddForce(movement * moveSpeed, ForceMode2D.Impulse);
+        if(!gameWon && !playDead)
+            rb2d.AddForce(movement * moveSpeed, ForceMode2D.Impulse);
     }
 
     void MouseLook2D()
@@ -112,7 +133,7 @@ public class PlayerCharacter : MonoBehaviour
         /// Put into Update() to have the 2D sprite follow the mouse.
 
         #region MouseLook2D() Code
-        if (deathTimer == 0)
+        if (deathTimer == 0 && !gameWon)
         {
             //Store Mouse Position
             Vector3 mousePosition = Input.mousePosition;
@@ -134,7 +155,7 @@ public class PlayerCharacter : MonoBehaviour
 
     void Attack()
     {
-        if (Input.GetButtonDown("Fire1") && deathTimer == 0)
+        if (Input.GetButtonDown("Fire1") && deathTimer == 0 && !gameWon)
         {
             if (attackCounter == attackTimer)
             {
@@ -143,7 +164,6 @@ public class PlayerCharacter : MonoBehaviour
 
                 attackCounter = 0.0f;
                 GameObject fireball = Instantiate(projectilePrefab, attackLocation.position, attackLocation.rotation) as GameObject;
-
             }
         }
 
@@ -167,12 +187,17 @@ public class PlayerCharacter : MonoBehaviour
     {
         Debug.Log("Incrementing Score");
         score += 1;
+        xp += 1;
         Debug.Log(score);
     }
 
     void Death()
-    {
-        PlaySound(die);
+    {        
+        if(!playDead)
+        {
+            PlaySound(die);
+            playDead = true;
+        }
         animator.SetBool("isDead", true);
         deathTimer += 1.0f * Time.deltaTime;
         if (deathTimer >= 4.0f)
@@ -181,6 +206,24 @@ public class PlayerCharacter : MonoBehaviour
         //SceneManager.LoadScene("Title");
         //Instantiate(deadPlayer, transform.position, transform.rotation);
         //Destroy(this.gameObject);
+    }
+
+    void LevelUp()
+    {
+        PlaySound(levelUp);
+        level++;
+
+        if (maxHealth != 10)
+            maxHealth++;
+
+        health = maxHealth;
+
+        if (Random.Range(1, 100) > 50)
+            attackDamage++;
+        else attackTimer -= 0.1f;
+
+        xp = 0;
+        xpNeededForLevel = Random.Range(3, 7);
     }
 
     public void PlaySound(AudioClip audio)

@@ -9,6 +9,7 @@ public class EnemySpawner : MonoBehaviour
 
     public float timeToNextSpawn;
     public float timer;
+    private GameObject playerCharacter;
 
     private void Awake()
     {
@@ -17,9 +18,11 @@ public class EnemySpawner : MonoBehaviour
 
     private void Update()
     {
+        playerCharacter = GameObject.Find("Player");
+        
         timer += 1.0f * Time.deltaTime;
 
-        if(timer >= timeToNextSpawn)
+        if(timer >= timeToNextSpawn && playerCharacter.GetComponent<PlayerCharacter>().gameWon == false && playerCharacter.GetComponent<PlayerCharacter>().health > 0)
         {
             SpawnEnemy(enemies[Random.Range(0, enemies.Length)]);
             timer = 0.0f;

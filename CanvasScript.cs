@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class CanvasScript : MonoBehaviour
 {
@@ -11,8 +12,10 @@ public class CanvasScript : MonoBehaviour
     public Image deathScreen;
     public Image endingScreen;
     public Text endingText;
+    public Button titleScreenButton;
 
     public int health, maxHealth;
+
 
     GameObject playerCharacter;    
 
@@ -21,20 +24,25 @@ public class CanvasScript : MonoBehaviour
         deathScreen.enabled = false;
         endingScreen.enabled = false;
         endingText.enabled = false;
+        //titleScreenButton.enabled = false;
+        titleScreenButton.gameObject.SetActive(false);
     }
 
     private void Update()
     {
-        playerCharacter = GameObject.Find("Player");
-
-        health = playerCharacter.GetComponent<PlayerCharacter>().health;
-        maxHealth = playerCharacter.GetComponent<PlayerCharacter>().maxHealth;
+        if(playerCharacter == null)
+            playerCharacter = GameObject.Find("Player");
+        else
+            health = playerCharacter.GetComponent<PlayerCharacter>().health;
+            maxHealth = playerCharacter.GetComponent<PlayerCharacter>().maxHealth;
 
         EndingScreen();
 
         if (playerCharacter.GetComponent<PlayerCharacter>().deathTimer >= 2.0f)
         {
             deathScreen.enabled = true;
+            endingText.enabled = true;
+            titleScreenButton.gameObject.SetActive(true);
         }
 
         for (int i = 0; i < heartTiles.Length; i++)
@@ -65,7 +73,13 @@ public class CanvasScript : MonoBehaviour
         {
             endingScreen.enabled = true;
             endingText.enabled = true;
-        }
-        
+            //titleScreenButton.enabled = true;
+            titleScreenButton.gameObject.SetActive(true);
+        }        
+    }
+
+    public void ReturnTitleScreen()
+    {
+        SceneManager.LoadScene("Title");
     }
 }

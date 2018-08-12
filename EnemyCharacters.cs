@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
-public class EnemyCharacters : MonoBehaviour 
+public class EnemyCharacters : MonoBehaviour
 {
     public float moveSpeed;
     public int health;
@@ -39,11 +39,11 @@ public class EnemyCharacters : MonoBehaviour
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
 
-        moveSpeed = 0.5f; //Multiply by 5 to achieve same as playercharacter.
-        attackSpeed = 5;
-        health = 5;
+        //moveSpeed = 0.5f; //Multiply by 5 to achieve same as playercharacter.
+       // attackSpeed = 5;
+        //health = 5;
         attackRange = 2.5f;
-        swingTimer = 5.0f;
+        //swingTimer = 5.0f;
 
         playerCharacter = GameObject.Find("Player");
         attackTarget = playerCharacter.transform;
@@ -63,19 +63,21 @@ public class EnemyCharacters : MonoBehaviour
 
     void Attack()
     {
-        if(Vector3.Distance(attackTarget.position, transform.position) < attackRange && attackTarget.gameObject.tag == "Player" && swingTimer == swingCounter)
+        if (attackTarget.GetComponent<PlayerCharacter>().health > 0 && attackTarget.GetComponent<PlayerCharacter>().gameWon == false)
         {
-            animator.SetBool("isRunning", false);
-            animator.SetTrigger("isAttacking");
-            swingCounter = 0.0f;
-            attackTarget.GetComponent<PlayerCharacter>().health -= 1;
-            attackTarget.GetComponent<PlayerCharacter>().PlaySound(attackTarget.GetComponent<PlayerCharacter>().hit);
+            if (Vector3.Distance(attackTarget.position, transform.position) < attackRange && attackTarget.gameObject.tag == "Player" && swingTimer == swingCounter)
+            {
+                animator.SetBool("isRunning", false);
+                animator.SetTrigger("isAttacking");
+                swingCounter = 0.0f;
+                attackTarget.GetComponent<PlayerCharacter>().health -= 1;
+                attackTarget.GetComponent<PlayerCharacter>().PlaySound(attackTarget.GetComponent<PlayerCharacter>().hit);
+            }
+            if (swingCounter < swingTimer)
+                swingCounter += 1.0f * Time.deltaTime;
+            else if (swingCounter > swingTimer)
+                swingCounter = swingTimer;
         }
-        if (swingCounter < swingTimer)
-            swingCounter += 1.0f * Time.deltaTime;
-        else if(swingCounter > swingTimer)
-            swingCounter = swingTimer;
-
     }
 
     void Movement()
@@ -97,7 +99,7 @@ public class EnemyCharacters : MonoBehaviour
         */
         //rb2d.AddForce(new Vector2((transform.position.x - attackTarget.position.x) * -moveSpeed, (transform.position.y - attackTarget.position.y) * -moveSpeed));
         float step = (moveSpeed * 5.0f) * Time.deltaTime;
-        transform.position = Vector2.MoveTowards(transform.position, attackTarget.position, step);        
+        transform.position = Vector2.MoveTowards(transform.position, attackTarget.position, step);
     }
 
     void Death()
