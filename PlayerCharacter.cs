@@ -80,7 +80,7 @@ public class PlayerCharacter : MonoBehaviour
         endingText.text = "Congratulations!\nYou Killed " + score + " Orcs!";
 
         xpText = GameObject.Find("xpText").GetComponent<Text>();
-        xpText.text = "XP: " + score;
+        xpText.text = "XP: " + xp;
 
         attackDamageText = GameObject.Find("attackDamageText").GetComponent<Text>();
         attackDamageText.text = "Attack Damage: " + this.attackDamage;
@@ -213,14 +213,15 @@ public class PlayerCharacter : MonoBehaviour
         PlaySound(levelUp);
         level++;
 
-        if (maxHealth != 10)
-            maxHealth++;
+        //if (maxHealth != 10)
+            //maxHealth++;
 
         health = maxHealth;
 
-        if (Random.Range(1, 100) > 50)
-            attackDamage++;
-        else attackTimer -= 0.1f;
+        //if (Random.Range(1, 100) > 50)
+            //attackDamage++;
+        //else 
+        attackTimer -= 0.05f;
 
         xp = 0;
         xpNeededForLevel = Random.Range(3, 7);

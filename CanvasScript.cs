@@ -30,11 +30,13 @@ public class CanvasScript : MonoBehaviour
 
     private void Update()
     {
-        if(playerCharacter == null)
+        if (playerCharacter == null)
             playerCharacter = GameObject.Find("Player");
         else
+        {
             health = playerCharacter.GetComponent<PlayerCharacter>().health;
             maxHealth = playerCharacter.GetComponent<PlayerCharacter>().maxHealth;
+        }
 
         EndingScreen();
 
