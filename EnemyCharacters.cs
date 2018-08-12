@@ -26,6 +26,9 @@ public class EnemyCharacters : MonoBehaviour
     private Vector2 currentPosition;
     private Animator animator;
 
+    private AudioSource audioSource;
+    public AudioClip attack, hit, die;
+
 
     private void Start()
     {
@@ -34,11 +37,12 @@ public class EnemyCharacters : MonoBehaviour
         col2d = GetComponent<Collider2D>();
         rb2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
 
         moveSpeed = 0.5f; //Multiply by 5 to achieve same as playercharacter.
         attackSpeed = 5;
         health = 5;
-        attackRange = 2;
+        attackRange = 2.5f;
         swingTimer = 5.0f;
 
         playerCharacter = GameObject.Find("Player");
@@ -65,6 +69,7 @@ public class EnemyCharacters : MonoBehaviour
             animator.SetTrigger("isAttacking");
             swingCounter = 0.0f;
             attackTarget.GetComponent<PlayerCharacter>().health -= 1;
+            attackTarget.GetComponent<PlayerCharacter>().PlaySound(attackTarget.GetComponent<PlayerCharacter>().hit);
         }
         if (swingCounter < swingTimer)
             swingCounter += 1.0f * Time.deltaTime;
@@ -95,17 +100,19 @@ public class EnemyCharacters : MonoBehaviour
         transform.position = Vector2.MoveTowards(transform.position, attackTarget.position, step);        
     }
 
-    void TakeDamage()
-    {
-    }
-
     void Death()
     {
         if (health <= 0)
         {
             //animator.SetTrigger("isDead");
             Instantiate(deadEnemy, transform.position, transform.rotation);
+            attackTarget.GetComponent<PlayerCharacter>().IncrementScore();
             Destroy(this.gameObject);
         }
+    }
+
+    public void PlaySound(AudioClip audio)
+    {
+        audioSource.PlayOneShot(audio, 0.6f);
     }
 }

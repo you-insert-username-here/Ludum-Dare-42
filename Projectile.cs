@@ -11,16 +11,20 @@ public class Projectile : MonoBehaviour
     public float timeToLive;
     public float timeAlive;
 
-    public int damage;
+    private int damage;
     public int moveSpeed;
 
     private Rigidbody2D rb2d;
     private Collider2D col2d;
+    GameObject playerCharacter;
 
     private void Start()
     {
+        playerCharacter = GameObject.Find("Player");
         moveSpeed = 12;
         timeToLive = 10;
+        damage = playerCharacter.GetComponent<PlayerCharacter>().attackDamage;
+
         rb2d = GetComponent<Rigidbody2D>();
         col2d = GetComponent<Collider2D>();
     }
@@ -45,7 +49,9 @@ public class Projectile : MonoBehaviour
         if (collision.gameObject.tag == "Player")
             collision.GetComponent<PlayerCharacter>().health -= damage;
         else if (collision.gameObject.tag == "Enemy")
+        {
             collision.GetComponent<EnemyCharacters>().health -= damage;
-        
+            collision.GetComponent<EnemyCharacters>().PlaySound(collision.GetComponent<EnemyCharacters>().hit);
+        }
     }
 }

@@ -9,11 +9,15 @@ public class GameLoop : MonoBehaviour
 
     public int rows, columns;
     public PlayerSpawner playerSpawner;
+    public AudioSource audioSource;
 
     private GameObject gameBoard;
 
     private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+        audioSource.volume = PlayerPrefs.GetFloat("Music Volume");
+
         gameBoard = new GameObject("Game Board");
 
         for (int i = 0; i < columns; i++)
